@@ -2,15 +2,16 @@ import { notFound } from "next/navigation";
 import { instruments } from "@/data/instruments";
 
 type InstrumentPageProps = {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 };
 
 export function generateStaticParams() {
   return instruments.map((instrument) => ({ slug: instrument.slug }));
 }
 
-export default function InstrumentDetailsPage({ params }: InstrumentPageProps) {
-  const instrument = instruments.find((item) => item.slug === params.slug);
+export default async function InstrumentDetailsPage({ params }: InstrumentPageProps) {
+  const { slug } = await params;
+  const instrument = instruments.find((item) => item.slug === slug);
 
   if (!instrument) {
     notFound();
